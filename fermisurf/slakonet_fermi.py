@@ -47,10 +47,15 @@ def eigenfield(atoms, nk=24, model_path=None, device="cpu"):
     if not ok:
         raise RuntimeError("SlakoNet property computation failed")
 
-    # eigenvalues + Fermi energy are in Hartree -> eV
-    efermi = float(props["fermi_energy"].detach().cpu().numpy().ravel()[0]) * H2EV
-    eig = np.real(props["eigenvalues"].detach().cpu().numpy())[0] * H2EV  # (nk^3, nbands)
-    nb = eig.shape[1]
+    eig = np.real(props["eigenvalues"].detach().cpu().numpy())[0]   # (nk^3, nbands), eV
+    occ = np.real(props["occupations"].detach().cpu().numpy())[0]
+    nktot, nb = eig.shape
+    # Fermi level from band filling (self-consistent with the eigenvalue spectrum;
+    # slakonet's reported fermi_energy is on a different reference). Two electrons per
+    # state, so fill n_elec/2 states per k-point.
+    n_elec = float(occ.sum(axis=1).mean())
+    n_filled = int(round(0.5 * n_elec * nktot))
+    efermi = float(np.sort(eig.ravel())[min(max(n_filled - 1, 0), eig.size - 1)])
     # SlakoNet MP order (slakonet.atoms._super_sampling): k=(m+0.5)/n, flattened as
     # p = iz*n^2 + iy*n + ix (meshgrid 'ij' over kz,ky,kx). Reshape -> (iz,iy,ix,band),
     # transpose -> (ix,iy,iz,band).

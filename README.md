@@ -22,16 +22,27 @@ pip install -r requirements.txt     # numpy scipy scikit-image plotly pymatgen i
 One command builds the aluminum Fermi surface from JARVIS-DFT with the SlakoNet model:
 
 ```bash
-python -m fermisurf.slakonet_fermi --jid JVASP-816 --nk 20 --out Al_fermi.html
-# -> E_F = -117.168 eV | grid 20^3 | wrote Al_fermi.html
+python -m fermisurf.slakonet_fermi --jid JVASP-816 --nk 24 --out Al_fermi.html
+# -> E_F = -0.002 eV | grid 24^3 | wrote Al_fermi.html
 ```
 
-Open `Al_fermi.html` in any browser to rotate the surface. A pre-built copy is in
-[`examples/JVASP-816_Al_fermi.html`](examples/JVASP-816_Al_fermi.html), and the full
-step-by-step walkthrough is in the notebook
-[`examples/aluminum_fermi_surface.ipynb`](examples/aluminum_fermi_surface.ipynb).
+This is the nearly-free-electron aluminum Fermi surface (the 2nd-band sheet plus the
+3rd-band corner arms), comparable to the reference images at
+[hzdr.de/projects/fermisur](https://www.hzdr.de/projects/fermisur/al.html). Open
+`Al_fermi.html` in a browser to rotate it; a pre-built copy is in
+[`examples/JVASP-816_Al_fermi.html`](examples/JVASP-816_Al_fermi.html).
 
 ![Aluminum Fermi surface](examples/Al_fermi_check.png)
+
+Two notebooks walk through the full workflow:
+
+- [`examples/slakonet_fermi_surface.ipynb`](examples/slakonet_fermi_surface.ipynb) -
+  SlakoNet tight-binding surfaces for Al, Nb, Mg, Ti (runs out of the box).
+- [`examples/jarvis_dft_fermi_surface.ipynb`](examples/jarvis_dft_fermi_surface.ipynb) -
+  the quantitative DFT route: a JARVIS-DFT structure + a static VASP run -> IFermi.
+
+The Fermi level is set from band filling (valence-electron count), self-consistently
+with the eigenvalue spectrum.
 
 ## SlakoNet route
 
