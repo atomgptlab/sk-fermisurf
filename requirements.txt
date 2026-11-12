@@ -1,0 +1,8 @@
+numpy
+scipy
+scikit-image
+plotly
+pymatgen
+ifermi
+jarvis-tools
+# SlakoNet route also needs: slakonet, torch
